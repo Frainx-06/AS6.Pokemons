@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/pokedexFragment">
+
+    <fragment
+        android:id="@+id/pokedexFragment"
+        android:name="com.example.as6pokemons.PokedexFragment"
+        android:label="fragment_pokedex"
+        tools:layout="@layout/fragment_pokedex" >
+        <action
+            android:id="@+id/action_pokedexFragment_to_fragmentDetallesPokemons"
+            app:destination="@id/fragmentDetallesPokemons" />
+        <action
+            android:id="@+id/action_pokedexFragment_to_favoritosPokemonFragment"
+            app:destination="@id/favoritosPokemonFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentDetallesPokemons"
+        android:name="com.example.as6pokemons.FragmentDetallesPokemons"
+        android:label="fragment_detalles_pokemons"
+        tools:layout="@layout/fragment_detalles_pokemons" >
+        <action
+            android:id="@+id/action_fragmentDetallesPokemons_to_favoritosPokemonFragment"
+            app:destination="@id/favoritosPokemonFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritosPokemonFragment"
+        android:name="com.example.as6pokemons.FavoritosPokemonFragment"
+        android:label="fragment_favoritos_pokemon"
+        tools:layout="@layout/fragment_favoritos_pokemon" >
+        <action
+            android:id="@+id/action_favoritosPokemonFragment_to_fragmentDetallesPokemons"
+            app:destination="@id/fragmentDetallesPokemons" />
+    </fragment>
+
+</navigation>
