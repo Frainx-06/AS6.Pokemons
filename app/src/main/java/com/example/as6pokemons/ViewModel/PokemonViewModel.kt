@@ -1,86 +1,107 @@
 package com.example.as6pokemons.ViewModel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.as6pokemons.Data.DefaultPokemons
 import com.example.as6pokemons.Model.PokemonData
 import com.example.as6pokemons.Repository.RepositoryPokemons
+import kotlinx.coroutines.launch
 
-class PokemonViewModel : ViewModel (){
-    //Referencia del repostirio de pokemons
-    private val repositorio = RepositoryPokemons()
+class PokemonViewModel(private val repositorio: RepositoryPokemons) : ViewModel() {
     val pokemonSeleccionado = MutableLiveData<PokemonData>()
-    //Este va a ser el livedata para los fav
     val pokemonFavoritos = MutableLiveData<List<PokemonData>>()
-
-    //El livedata que saca la lista de pokemons
     val pokemons: MutableLiveData<List<PokemonData>> = MutableLiveData()
 
+    //Obtener todos los pokemons
     fun obtenerPokemons() {
-        //Recupera los animales del repositorio y los mete
-        pokemons.value = repositorio.getListaPokemons()
-        actualizarFavoritos()
-    }
-
-    //Selecciona un pokemon para que saque luego los detalles en el segundo fragmet
-    fun seleccionarPokemon(pokemonData: PokemonData){
-        pokemonSeleccionado.value = pokemonData
-    }
-
-    // Elimina un animal del repositorio y actualiza el LiveData
-    fun eliminarPokemon(position: Int) {
-        // Obtenemos la lista actual del LiveData
-        val listaActual = pokemons.value
-
-        // Comprobamos que la lista existe y que la posición es válida
-        if (listaActual != null && position in listaActual.indices) {
-            // Recuperamos el animal que queremos eliminar
-            val eliminado = listaActual[position]
-
-            // Lo eliminamos del repositorio (fuente de datos)
-            repositorio.eliminarPokemon(eliminado)
-
-            // Actualizamos el LiveData con la nueva lista
-            pokemons.value = repositorio.getListaPokemons()
+        viewModelScope.launch {
+            var lista = repositorio.getListaPokemons()
+            if (lista.isEmpty()) {
+                repositorio.insertarPokemons(DefaultPokemons.list)
+                lista = repositorio.getListaPokemons()
+            }
+            pokemons.value = lista
+            actualizarFavoritos()
         }
     }
 
+    //  Seleccionar pokemon
+    fun seleccionarPokemon(pokemonData: PokemonData) {
+        pokemonSeleccionado.value = pokemonData
+    }
+
+    //  Eliminar pokemon
+    fun eliminarPokemon(position: Int) {
+        viewModelScope.launch {
+            val listaActual = pokemons.value
+
+            if (listaActual != null && position in listaActual.indices) {
+                val eliminado = listaActual[position]
+
+                repositorio.eliminarPokemon(eliminado)
+
+                val nuevaLista = repositorio.getListaPokemons()
+                pokemons.value = nuevaLista
+                actualizarFavoritos()
+            }
+        }
+    }
+
+    //  Actualizar pokemon
     fun actualizarPokemon(pokemonData: PokemonData) {
-        //Actualizamos el repositorio y a la livedata de la lista de favs
-        repositorio.actualizarPokemon(pokemonData)
-        pokemons.value = repositorio.getListaPokemons()
-        actualizarFavoritos()
+        viewModelScope.launch {
+            repositorio.actualizarPokemon(pokemonData)
+
+            val nuevaLista = repositorio.getListaPokemons()
+            pokemons.value = nuevaLista
+            actualizarFavoritos()
+        }
     }
 
+    //  Buscar por nombre
     fun buscarPokemonPorNombre(texto: String) {
-        pokemons.value = repositorio.getPokemonPorNombre(texto)
+        viewModelScope.launch {
+            val resultado = repositorio.getPokemonPorNombre(texto)
+            pokemons.value = resultado
+        }
     }
 
-    //Actualizamos los pokemons solo a los favoritos
+    //  Filtrar favoritos
     fun actualizarFavoritos() {
-        // Filtra los Pokémon que están marcados como favoritos y actualiza el LiveData
         val listaActual = pokemons.value ?: emptyList()
         pokemonFavoritos.value = listaActual.filter { it.favorito }
     }
 
-
-    //Actualizar los nombres
-    private val titulo = MutableLiveData<String>("Inicio")
+    //  Título toolbar
+    private val titulo = MutableLiveData("Inicio")
     val title: LiveData<String> get() = titulo
 
-    // Funcion para actualizar el titulo de la toolbar
     fun updateTitle(newTitle: String) {
         titulo.value = newTitle
     }
 
+    suspend fun getNextId(): Int {
+        val max = repositorio.getIdMax() ?: 0
+        return max + 1
+    }
+
+    suspend fun agregarPokemon(pokemonData: PokemonData) {
+        repositorio.insertarPokemon(pokemonData)
+
+        val nuevaLista = repositorio.getListaPokemons()
+        pokemons.value = nuevaLista
+        actualizarFavoritos()
+    }
+
+
+    //  Buscar dentro de favoritos
     fun buscarFavoritosPorNombre(texto: String) {
         val listaFavs = pokemons.value?.filter { it.favorito } ?: emptyList()
+
         pokemonFavoritos.value = if (texto.isBlank()) {
             listaFavs
         } else {
             listaFavs.filter { it.name.contains(texto, ignoreCase = true) }
         }
     }
-
 
 }

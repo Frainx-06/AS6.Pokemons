@@ -37,7 +37,7 @@ class FragmentDetallesPokemons : Fragment() {
 
         viewModel.pokemonSeleccionado.observe(viewLifecycleOwner) { pokemonData ->
             pokemonData?.let {
-                binding.imgDetallePokemon.setImageResource(it.img)
+                binding.imgDetallePokemon.loadPokemonImage(it.img)
                 binding.tvDetalleId.setText("N.º ${it.id}")
                 binding.tvDetalleNombre.setText(it.name)
                 binding.tvDetalleDescripcion.setText(it.descripcion)

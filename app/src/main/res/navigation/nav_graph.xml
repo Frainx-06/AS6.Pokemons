@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_pokedexFragment_to_favoritosPokemonFragment"
             app:destination="@id/favoritosPokemonFragment" />
+        <action
+            android:id="@+id/action_pokedexFragment_to_crearFragment"
+            app:destination="@id/crearFragment" />
     </fragment>
     <fragment
         android:id="@+id/fragmentDetallesPokemons"
@@ -34,6 +37,15 @@
         <action
             android:id="@+id/action_favoritosPokemonFragment_to_fragmentDetallesPokemons"
             app:destination="@id/fragmentDetallesPokemons" />
+    </fragment>
+    <fragment
+        android:id="@+id/crearFragment"
+        android:name="com.example.as6pokemons.CrearFragment"
+        android:label="fragment_crear"
+        tools:layout="@layout/fragment_crear" >
+        <action
+            android:id="@+id/action_crearFragment_to_pokedexFragment"
+            app:destination="@id/pokedexFragment" />
     </fragment>
 
 </navigation>

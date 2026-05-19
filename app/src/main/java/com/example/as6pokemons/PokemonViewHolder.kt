@@ -12,7 +12,7 @@ class PokemonViewHolder (view: View): RecyclerView.ViewHolder(view){
     //Esta funcion se llama para cada item del recyclerview, basicamente la que rellena los datos
     fun render(pokemonData: PokemonData){
         binding.tvPokemonId.text = "N.º ${pokemonData.id}"
-        binding.imgPokemon.setImageResource(pokemonData.img)
+        binding.imgPokemon.loadPokemonImage(pokemonData.img)
         binding.tvPokemonNombre.text = pokemonData.name
     }
 

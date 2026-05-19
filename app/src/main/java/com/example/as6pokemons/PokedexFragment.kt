@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,6 @@ class PokedexFragment : Fragment() {
     private var _binding: FragmentPokedexBinding? = null
     private val binding get() = _binding!!
 
-    private val repositorio = RepositoryPokemons()
     private lateinit var adapter: PokemonAdapterRecyclerView
     private lateinit var viewModel: PokemonViewModel
 
@@ -48,6 +48,9 @@ class PokedexFragment : Fragment() {
             adapter.establecerLista(lista)
         }
 
+        binding.fabMain.setOnClickListener {
+            findNavController().navigate(R.id.action_pokedexFragment_to_crearFragment)
+        }
 
         viewModel.obtenerPokemons()
         eventoEliminarPokemon(view)
@@ -92,14 +95,12 @@ class PokedexFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.bindingAdapterPosition
 
-                if (position != RecyclerView.NO_POSITION) {
-                    val pokemonEliminado = repositorio.getPosicionPokemon(position)
 
                     if (position != RecyclerView.NO_POSITION) {
                         // Pedimos al ViewModel que elimine el animal de esa posición
                         viewModel.eliminarPokemon(position)
                     }
-                }
+
             }
 
         }

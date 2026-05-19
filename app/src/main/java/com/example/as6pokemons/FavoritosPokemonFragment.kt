@@ -19,7 +19,6 @@ import com.example.as6pokemons.databinding.FragmentFavoritosPokemonBinding
 class FavoritosPokemonFragment : Fragment() {
     private var _binding: FragmentFavoritosPokemonBinding? = null
     private val binding get() = _binding!!
-    private val repositorio = RepositoryPokemons()
     private lateinit var viewModel: PokemonViewModel
     private lateinit var adapter: PokemonAdapterRecyclerView
 
@@ -85,14 +84,11 @@ class FavoritosPokemonFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.bindingAdapterPosition
 
-                if (position != RecyclerView.NO_POSITION) {
-                    val pokemonEliminado = repositorio.getPosicionPokemon(position)
-
                     if (position != RecyclerView.NO_POSITION) {
                         // Pedimos al ViewModel que elimine el animal de esa posición
                         viewModel.eliminarPokemon(position)
                     }
-                }
+
             }
 
         }
