@@ -3,6 +3,8 @@ package com.example.as6pokemons.Data
 import com.example.as6pokemons.Model.PokemonData
 
 object DefaultPokemons {
+
+    //Lista de pokemons iniciales por si no hay datos descargados o no hay internet
     val list = listOf(
         PokemonData(
             img = "p_001",

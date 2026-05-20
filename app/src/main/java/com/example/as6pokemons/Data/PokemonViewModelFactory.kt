@@ -16,7 +16,7 @@ class PokemonViewModelFactory(private val context: Context) : ViewModelProvider.
             val database = PokemonDatabase.getDatabase(context)
 
             // Repositorio
-            val repository = RepositoryPokemons(database.pokemonDao())
+            val repository = RepositoryPokemons(database.pokemonDao(), context.applicationContext)
 
             @Suppress("UNCHECKED_CAST")
             return PokemonViewModel(repository) as T

@@ -39,7 +39,7 @@ class PokemonViewModel(private val repositorio: RepositoryPokemons) : ViewModel(
 
                 repositorio.eliminarPokemon(eliminado)
 
-                val nuevaLista = repositorio.getListaPokemons()
+                val nuevaLista = repositorio.getListaPokemonsLocal()
                 pokemons.value = nuevaLista
                 actualizarFavoritos()
             }
@@ -51,7 +51,7 @@ class PokemonViewModel(private val repositorio: RepositoryPokemons) : ViewModel(
         viewModelScope.launch {
             repositorio.actualizarPokemon(pokemonData)
 
-            val nuevaLista = repositorio.getListaPokemons()
+            val nuevaLista = repositorio.getListaPokemonsLocal()
             pokemons.value = nuevaLista
             actualizarFavoritos()
         }
@@ -87,7 +87,7 @@ class PokemonViewModel(private val repositorio: RepositoryPokemons) : ViewModel(
     suspend fun agregarPokemon(pokemonData: PokemonData) {
         repositorio.insertarPokemon(pokemonData)
 
-        val nuevaLista = repositorio.getListaPokemons()
+        val nuevaLista = repositorio.getListaPokemonsLocal()
         pokemons.value = nuevaLista
         actualizarFavoritos()
     }

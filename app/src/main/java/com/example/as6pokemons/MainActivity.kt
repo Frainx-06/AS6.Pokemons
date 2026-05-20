@@ -6,12 +6,9 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.example.as6pokemons.Database.PokemonDatabase
-import com.example.as6pokemons.Repository.RepositoryPokemons
 import com.example.as6pokemons.ViewModel.PokemonViewModel
 import com.example.as6pokemons.ViewModel.PokemonViewModelFactory
 import com.example.as6pokemons.databinding.ActivityMainBinding
@@ -29,14 +26,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Crear DB → DAO → Repository → Factory
-        val database = PokemonDatabase.getDatabase(this)
-        val repository = RepositoryPokemons(database.pokemonDao())
-        // MainActivity.kt
         val factory = PokemonViewModelFactory(applicationContext)
-        viewModel = ViewModelProvider(this, factory)
-            .get(PokemonViewModel::class.java)
-
-        // ViewModel con factory (IMPORTANTE)
         viewModel = ViewModelProvider(this, factory)
             .get(PokemonViewModel::class.java)
 

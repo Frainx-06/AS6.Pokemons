@@ -23,9 +23,11 @@ abstract class PokemonDatabase : RoomDatabase() {
     abstract fun pokemonDao(): PokemonDao
 
     companion object {
+        //Instancia unica de la base de datos para toda la app
         @Volatile
         private var INSTANCE: PokemonDatabase? = null
 
+        //Funcion para crear o recuperar la base de datos
         fun getDatabase(context: Context): PokemonDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -42,6 +44,7 @@ abstract class PokemonDatabase : RoomDatabase() {
             }
         }
 
+        //Funcion para meter los pokemons iniciales si la tabla esta vacia
         private fun seedDefaultPokemons(database: PokemonDatabase) {
             CoroutineScope(Dispatchers.IO).launch {
                 val dao = database.pokemonDao()

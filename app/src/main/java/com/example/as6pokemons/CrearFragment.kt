@@ -24,17 +24,19 @@ class CrearFragment : Fragment() {
     private lateinit var viewModel: PokemonViewModel
     private var selectedImageUri: Uri? = null
 
+    //Launcher para abrir la galeria y seleccionar la foto del pokemon
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         if (uri != null) {
             try {
+                //Guardamos permiso para poder volver a leer la imagen mas adelante
                 requireContext().contentResolver.takePersistableUriPermission(
                     uri,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
             } catch (_: SecurityException) {
-                // Some gallery providers do not offer persistable permissions.
+                //Algunas galerias no dan permiso persistente, pero no cortamos la app por eso
             }
 
             selectedImageUri = uri
@@ -74,12 +76,14 @@ class CrearFragment : Fragment() {
         imagePickerLauncher.launch(arrayOf("image/*"))
     }
 
+    //Funcion para validar los campos y guardar el pokemon en room
     private fun guardarPokemon() {
         val nombrePokemon = binding.nombrePokemon.editText?.text.toString().trim()
         val tipoPokemonTexto = binding.tipoPokemon.editText?.text.toString().trim()
         val descripcionPokemon = binding.descripcionPokemon.editText?.text.toString().trim()
         val fotoPokemon = selectedImageUri
 
+        //En caso de que salte algún error metemos un null para que no pete
         binding.nombrePokemon.error = null
         binding.tipoPokemon.error = null
         binding.descripcionPokemon.error = null
@@ -87,6 +91,7 @@ class CrearFragment : Fragment() {
 
         var formularioValido = true
 
+        //Comprobamos cada campo para mostrar el error justo donde toca
         if (nombrePokemon.isBlank()) {
             binding.nombrePokemon.error = "Introduce un nombre"
             formularioValido = false
@@ -111,12 +116,14 @@ class CrearFragment : Fragment() {
             return
         }
 
+        //Separamos los tipos por comas o punto y coma para que se pase bien a la room y pueda convertilo con los converter
         val tipoPokemonLista = tipoPokemonTexto
             .split(',', ';')
             .map { it.trim() }
             .filter { it.isNotEmpty() }
 
         lifecycleScope.launch {
+            //Desactivamos el boton para evitar guardar dos veces seguidas
             binding.guardarButton.isEnabled = false
 
             try {
